@@ -37,6 +37,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "0a5cdb50-5187-4efa-8ddf-173d61b7245e"
+      }
+    },
+    "owner": "learning-twice"
   }
 }
