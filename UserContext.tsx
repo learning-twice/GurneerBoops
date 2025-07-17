@@ -1,5 +1,5 @@
-import { createContext, useContext, useState, useEffect } from "react";
-import { signIn as googleSignIn, signOut as googleSignOut, signInSilently } from "@/auth"
+import { signIn as googleSignIn, signOut as googleSignOut, signInSilently } from "@/auth";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type User = any;
 
