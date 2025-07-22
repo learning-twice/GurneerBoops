@@ -3,24 +3,31 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 type User = any;
 
+type AuthStatus = "loading" | "unauthenticated" | "authenticated";
+
 type UserContextType = {
   user: User | null | undefined;
   signIn: () => void;
   signOut: () => void;
+  status: AuthStatus;
 };
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null | undefined>(undefined);
+  const[status, setStatus] = useState<AuthStatus>("loading");
 
   const fetchUser = async () => {
     try {
       const current = await signInSilently();
       if (current) {
         setUser(current);
+        setStatus("authenticated");
       } else {
         setUser(null);
+        setStatus("unauthenticated");
+
       }
     } catch (err) {
       console.error("Failed to get current user:", err);
@@ -33,15 +40,21 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signIn = async () => {
     const user = await googleSignIn();
-    setUser(user);
+    if(user){
+        setUser(user);
+        setStatus("authenticated");
+
+    }
+  
   };
 
   const signOut = async () => {
     await googleSignOut();
     setUser(null);
+    setStatus("unauthenticated");
   };
 
-  return <UserContext.Provider value={{ user, signIn, signOut }}>{children}</UserContext.Provider>;
+  return <UserContext.Provider value={{ user, signIn, signOut, status }}>{children}</UserContext.Provider>;
 };
 
 export const useUser = () => {

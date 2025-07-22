@@ -12,12 +12,14 @@ export const signIn = async () => {
   try {
     await GoogleSignin.hasPlayServices();
     const response = await GoogleSignin.signIn();
+    console.log(response);
     if (isSuccessResponse(response)) {
       return response.data.user;
     } else {
       // sign in was cancelled by user
     }
   } catch (error) {
+    console.log(error);
     if (isErrorWithCode(error)) {
       switch (error.code) {
         case statusCodes.IN_PROGRESS:

@@ -1,10 +1,10 @@
-import { StyleSheet } from "react-native";
 import { H1 } from "@/components/Headings";
-import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import Page from "@/components/Page";
 import { useUser } from "@/UserContext";
+import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
+import { StyleSheet } from "react-native";
 
-export default function Index() {
+export default function () {
   const { signIn } = useUser();
 
   return (

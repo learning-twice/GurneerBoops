@@ -1,6 +1,5 @@
 import { UserProvider, useUser } from "@/UserContext";
-import { Stack, useRouter } from "expo-router";
-import { useEffect } from "react";
+import { Stack } from "expo-router";
 
 export default function RootLayout() {
   return (
@@ -11,36 +10,19 @@ export default function RootLayout() {
 }
 
 const App = () => {
-  const { user } = useUser();
-  const router = useRouter();
+  const { status } = useUser();
 
-  useEffect(() => {
-    if (user) {
-      router.replace("/home");
-    }
-
-    if (user === null) {
-      router.replace("/landing");
-    }
-  }, [user]);
+  if (status === "loading") return null;
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Screen
-        name="home"
-        options={{
-          title: "Home Sweet Home",
-          headerShown: true,
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: "#4B9CD3",
-          },
-          headerTintColor: "white",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-        }}
-      />
+      <Stack.Protected guard={status === "authenticated"}>
+        <Stack.Screen name="(main)" />
+      </Stack.Protected>
+
+      <Stack.Protected guard={status === "unauthenticated"}>
+        <Stack.Screen name="(public)" />
+      </Stack.Protected>
     </Stack>
   );
 };
