@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { ReactNode } from "react";
 
 type PageProps = {
@@ -7,5 +7,14 @@ type PageProps = {
 };
 
 export default function Page({ children, style }: PageProps) {
-  return <View style={[{ flex: 1 }, style]}>{children}</View>;
+  return <View style={[styles.container, style]}>{children}</View>;
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 150,
+    paddingLeft: 100,         
+    backgroundColor: "#fff",
+  },
+});

@@ -56,3 +56,20 @@ using (
   (select auth.uid()) = user_a
   or (select auth.uid()) = user_b
 );
+
+--- allow acces to users in profiles.... 
+create policy "Users can view profiles of their connections"
+on public.profiles
+as permissive
+for select
+to authenticated
+using (
+  exists (
+    select 1
+    from public.connections
+    where (
+      (user_a = (select auth.uid()) and user_b = profiles.id) or
+      (user_b = (select auth.uid()) and user_a = profiles.id)
+    )
+  )
+);
