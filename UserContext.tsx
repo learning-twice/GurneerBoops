@@ -1,6 +1,5 @@
-import { getUserFromSupabase, signIn as googleSignIn, signOut as googleSignOut } from "@/auth";
-import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "./supabase";
+import { createContext, useContext, useState, useEffect } from "react";
+import { signIn as googleSignIn, signOut as googleSignOut, getUserFromSupabase } from "@/auth";
 
 type User = any;
 
@@ -31,20 +30,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUser = async () => {
     try {
-
-   const {data, error} = await supabase.from("movies").select();
-      console.log(data.length);
-      const current = await getUserFromSupabase();
-      setAuth(current);
+      const user = await getUserFromSupabase();
+      setAuth(user);
     } catch (err) {
       console.error("Failed to get current user:", err);
-      
     }
   };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
 
   const signIn = async () => {
     const user = await googleSignIn();
@@ -56,6 +47,10 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     setAuth(null);
   };
 
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
   return <UserContext.Provider value={{ user, signIn, signOut, status }}>{children}</UserContext.Provider>;
 };
 
@@ -64,5 +59,3 @@ export const useUser = () => {
   if (!ctx) throw new Error("useUser must be used within UserProvider");
   return ctx;
 };
-
-

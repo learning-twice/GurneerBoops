@@ -1,5 +1,6 @@
 import { GoogleSignin, statusCodes, isSuccessResponse, isErrorWithCode } from "@react-native-google-signin/google-signin";
 import { supabase } from "@/supabase";
+import { findProfile, upsertProfile } from "@/api";
 
 GoogleSignin.configure({
    iosClientId: "895289514692-lpihg3tl9unlc3thtklej03e6ckru1rl.apps.googleusercontent.com",
@@ -8,46 +9,43 @@ GoogleSignin.configure({
 });
 
 export async function getUserFromSupabase() {
-  return (await supabase.auth.getUser()).data.user;
+  try {
+    const { data } = await supabase.auth.getUser();
+
+    const authUser = data.user;
+    if (!authUser) return null;
+
+    return findProfile(authUser.id);
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 export const signIn = async () => {
   try {
     await GoogleSignin.hasPlayServices();
-    const response = await GoogleSignin.signIn();
-    if (isSuccessResponse(response)) {
-      if (response.data.idToken) {
-        const {
-          data: { user },
-          error,
-        } = await supabase.auth.signInWithIdToken({
-          provider: "google",
-          token: response.data.idToken,
-        });
 
-        if (error) throw error;
-        return user;
-      }
-    } else {
-      // sign in was cancelled by user
-    }
+    const googleAuthData = await GoogleSignin.signIn();
+    const idToken = googleAuthData.data?.idToken;
+
+    if (!idToken) throw new Error("Missing Google ID token");
+
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: "google",
+      token: idToken,
+    });
+
+    if (error) throw error;
+    const authUser = data.user;
+    if (!authUser) throw new Error("No auth user!");
+
+    const { email, avatar_url, full_name } = authUser.user_metadata;
+
+    const user = await upsertProfile({ id: authUser.id, email, full_name, avatar_url });
+
+    return user;
   } catch (error) {
     console.error(error);
-
-    if (isErrorWithCode(error)) {
-      switch (error.code) {
-        case statusCodes.IN_PROGRESS:
-          // operation (eg. sign in) already in progress
-          break;
-        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          // Android only, play services not available or outdated
-          break;
-        default:
-        // some other error happened
-      }
-    } else {
-      // an error that's not related to google sign in occurred
-    }
   }
 };
 
@@ -59,5 +57,3 @@ export const signOut = async () => {
     console.error(error);
   }
 };
-
-

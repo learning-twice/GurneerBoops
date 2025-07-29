@@ -1,15 +1,24 @@
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default () => {
   return (
-    <Stack>
-      <Stack.Screen
+    <Tabs>
+      <Tabs.Screen
         name="index"
         options={{
-          title: "Home Sweet Home",
           headerShown: false,
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="house" color={color} />,
         }}
       />
-    </Stack>
+
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="settings" color={color} />,
+        }}
+      />
+    </Tabs>
   );
 };
