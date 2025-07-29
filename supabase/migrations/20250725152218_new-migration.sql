@@ -38,3 +38,21 @@ to authenticated
 using (
   (select auth.uid()) = id
 );
+
+create table connections (
+  id uuid primary key default gen_random_uuid(),
+  user_a uuid not null references profiles(id) on delete cascade,
+  user_b uuid not null references profiles(id) on delete cascade,
+  created_at timestamp with time zone default now(),
+  unique (user_a, user_b)
+);
+
+create policy "Users can view their own connections"
+on connections
+as permissive
+for select
+to authenticated
+using (
+  (select auth.uid()) = user_a
+  or (select auth.uid()) = user_b
+);

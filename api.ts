@@ -16,3 +16,9 @@ export const findProfile = async (id: String) => {
   if (error) throw error;
   return data;
 };
+
+export const getConnections = async (id: String) => {
+  const { data, error } = await supabase.from("connections").select();
+  if (error) throw error;
+  return data;
+};
