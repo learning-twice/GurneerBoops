@@ -2,7 +2,7 @@ import Page from "@/components/Page";
 import { useUser } from "@/UserContext";
 import { getConnections } from "@/api";
 import { useEffect, useState } from "react";
-import { createInvite } from "@/api";
+import { createInvite, acceptInvite } from "@/api";
 import {
   Text,
   ActivityIndicator,
@@ -45,6 +45,12 @@ export default function ConnectionsScreen() {
     <Page>
       <Text style={styles.greeting}>Hello {user.full_name}!</Text>
       <Button title="Invite" onPress={handlecreateInvite}/>
+      <Button
+        title="Accept"
+        onPress={() => {
+          acceptInvite("1a659290-7a73-4585-a936-13488a1c2215");
+        }}
+      />
       <Text style={styles.subtext}>
         You have {connections.length} connection{connections.length !== 1 ? "s" : ""}.
       </Text>

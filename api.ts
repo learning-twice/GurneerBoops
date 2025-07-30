@@ -29,3 +29,11 @@ export const createInvite = async(id: string) => {
   console.log(data, error);
   return data;
 }
+
+export const acceptInvite = async (id: string) => {
+  const {data, error} = await supabase.functions.invoke("redeem-invite", {
+    body:{id},
+  });
+  console.log(data, error);
+  return data;
+}
