@@ -8,6 +8,7 @@ export default () => {
         name="index"
         options={{
           headerShown: false,
+          title: "home",
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="house" color={color} />,
         }}
       />

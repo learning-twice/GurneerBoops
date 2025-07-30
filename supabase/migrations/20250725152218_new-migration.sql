@@ -73,3 +73,21 @@ using (
     )
   )
 );
+
+create table invites (
+  id uuid primary key default gen_random_uuid(),
+  inviter_id uuid not null references profiles(id) on delete cascade,
+  used boolean default false,
+  used_by uuid references profiles(id),
+  created_at timestamp with time zone default now(),
+  expires_at timestamp with time zone
+);
+
+create policy "Enable users to view their own invites"
+on invites
+as PERMISSIVE
+for SELECT
+to authenticated
+using (
+  (select auth.uid()) = inviter_id
+);

@@ -2,12 +2,14 @@ import Page from "@/components/Page";
 import { useUser } from "@/UserContext";
 import { getConnections } from "@/api";
 import { useEffect, useState } from "react";
+import { createInvite } from "@/api";
 import {
   Text,
   ActivityIndicator,
   View,
   FlatList,
   StyleSheet,
+  Button,
 } from "react-native";
 
 export default function ConnectionsScreen() {
@@ -32,11 +34,17 @@ export default function ConnectionsScreen() {
 
   const peeps = connections.map((connect: any) =>
     connect.user_a.id === user.id ? connect.user_b : connect.user_a
+ 
   );
+   const handlecreateInvite = async() =>{
+    console.log("invite someone!");
+    createInvite(user.id);
+  }
 
   return (
     <Page>
       <Text style={styles.greeting}>Hello {user.full_name}!</Text>
+      <Button title="Invite" onPress={handlecreateInvite}/>
       <Text style={styles.subtext}>
         You have {connections.length} connection{connections.length !== 1 ? "s" : ""}.
       </Text>

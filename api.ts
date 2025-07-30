@@ -18,9 +18,14 @@ export const findProfile = async (id: String) => {
 };
 
 export const getConnections = async () => {
-    //because user a and user b both have a profile, need to be specific 
-  const { data, error } = await supabase.from("connections").select(`ua:user_a(*), ub:user_b(*)`);
-  console.log(data, error);
+  const { data, error } = await supabase.from("connections").select(`*, user_a(*), user_b(*)`);
   if (error) throw error;
   return data;
 };
+
+
+export const createInvite = async(id: string) => {
+  const {data, error} = await supabase.from("invites").insert({inviter_id: id}).select().single();
+  console.log(data, error);
+  return data;
+}

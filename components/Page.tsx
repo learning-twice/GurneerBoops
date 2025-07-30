@@ -13,8 +13,7 @@ export default function Page({ children, style }: PageProps) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 150,
-    paddingLeft: 100,         
+    paddingTop: 100,         
     backgroundColor: "#fff",
   },
 });
