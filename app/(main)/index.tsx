@@ -33,7 +33,7 @@ export default function ConnectionsScreen() {
   }
 
   const peeps = connections.map((connect: any) =>
-    connect.user_a.id === user.id ? connect.user_b : connect.user_a
+    connect.inviter_id.id === user.id ? connect.invitee_id : connect.inviter_id
  
   );
    const handlecreateInvite = async() =>{

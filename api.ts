@@ -18,7 +18,7 @@ export const findProfile = async (id: String) => {
 };
 
 export const getConnections = async () => {
-  const { data, error } = await supabase.from("connections").select(`*, user_a(*), user_b(*)`);
+  const { data, error } = await supabase.from("connections").select(`*, inviter_id(*), invitee_id(*)`);
   if (error) throw error;
   return data;
 };

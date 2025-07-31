@@ -1,3 +1,12 @@
+create table profiles (
+  id uuid references auth.users(id) on delete cascade not null primary key,
+  updated_at timestamp with time zone,
+  email text unique,
+  full_name text,
+  avatar_url text,
+);
+
+
 create policy "Enable users to view their own data only"
 on "public"."profiles"
 as PERMISSIVE
@@ -39,13 +48,17 @@ using (
   (select auth.uid()) = id
 );
 
+--- Connections
+
 create table connections (
   id uuid primary key default gen_random_uuid(),
-  user_a uuid not null references profiles(id) on delete cascade,
-  user_b uuid not null references profiles(id) on delete cascade,
+  inviter_id uuid not null references profiles(id) on delete cascade,
+  invitee_id uuid not null references profiles(id) on delete cascade,
   created_at timestamp with time zone default now(),
-  unique (user_a, user_b)
+  unique (inviter_id, invitee_id)
 );
+
+alter table connections enable row level security;
 
 create policy "Users can view their own connections"
 on connections
@@ -53,8 +66,7 @@ as permissive
 for select
 to authenticated
 using (
-  (select auth.uid()) = user_a
-  or (select auth.uid()) = user_b
+  (select auth.uid()) in (inviter_id, invitee_id)
 );
 
 --- allow acces to users in profiles.... 
@@ -64,16 +76,15 @@ as permissive
 for select
 to authenticated
 using (
-  exists (
-    select 1
-    from public.connections
-    where (
-      (user_a = (select auth.uid()) and user_b = profiles.id) or
-      (user_b = (select auth.uid()) and user_a = profiles.id)
-    )
+  profiles.id in (
+    select inviter_id from public.connections where invitee_id = (select auth.uid())
+    union
+    select invitee_id from public.connections where inviter_id = (select auth.uid())
   )
 );
 
+
+--- Invites
 create table invites (
   id uuid primary key default gen_random_uuid(),
   inviter_id uuid not null references profiles(id) on delete cascade,
@@ -81,6 +92,17 @@ create table invites (
   used_by uuid references profiles(id),
   created_at timestamp with time zone default now(),
   expires_at timestamp with time zone
+);
+
+alter table invites enable row level security;
+
+create policy "Enable insert for invites -- authenticated users only"
+on invites
+as PERMISSIVE
+for INSERT
+to authenticated
+with check (
+  true
 );
 
 create policy "Enable users to view their own invites"
