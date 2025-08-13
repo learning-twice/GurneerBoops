@@ -3,8 +3,10 @@ create table profiles (
   updated_at timestamp with time zone,
   email text unique,
   full_name text,
-  avatar_url text,
+  avatar_url text
 );
+
+alter table profiles enable row level security;
 
 
 create policy "Enable users to view their own data only"
@@ -52,13 +54,23 @@ using (
 
 create table connections (
   id uuid primary key default gen_random_uuid(),
-  inviter_id uuid not null references profiles(id) on delete cascade,
-  invitee_id uuid not null references profiles(id) on delete cascade,
+  inviter_id uuid references profiles(id) on delete cascade not null,
+  invitee_id uuid references profiles(id) on delete cascade,
   created_at timestamp with time zone default now(),
-  unique (inviter_id, invitee_id)
+  accepted_at timestamp with time zone
 );
 
 alter table connections enable row level security;
+
+create policy "Users can create their own connections"
+on connections
+as PERMISSIVE
+for INSERT
+to authenticated
+with check (
+  true
+);
+
 
 create policy "Users can view their own connections"
 on connections
@@ -84,32 +96,32 @@ using (
 );
 
 
---- Invites
-create table invites (
-  id uuid primary key default gen_random_uuid(),
-  inviter_id uuid not null references profiles(id) on delete cascade,
-  used boolean default false,
-  used_by uuid references profiles(id),
-  created_at timestamp with time zone default now(),
-  expires_at timestamp with time zone
-);
+-- --- Invites
+-- create table invites (
+--   id uuid primary key default gen_random_uuid(),
+--   inviter_id uuid not null references profiles(id) on delete cascade,
+--   used boolean default false,
+--   used_by uuid references profiles(id),
+--   created_at timestamp with time zone default now(),
+--   expires_at timestamp with time zone
+-- );
 
-alter table invites enable row level security;
+-- alter table invites enable row level security;
 
-create policy "Enable insert for invites -- authenticated users only"
-on invites
-as PERMISSIVE
-for INSERT
-to authenticated
-with check (
-  true
-);
+-- create policy "Enable insert for invites -- authenticated users only"
+-- on invites
+-- as PERMISSIVE
+-- for INSERT
+-- to authenticated
+-- with check (
+--   true
+-- );
 
-create policy "Enable users to view their own invites"
-on invites
-as PERMISSIVE
-for SELECT
-to authenticated
-using (
-  (select auth.uid()) = inviter_id
-);
+-- create policy "Enable users to view their own invites"
+-- on invites
+-- as PERMISSIVE
+-- for SELECT
+-- to authenticated
+-- using (
+--   (select auth.uid()) = inviter_id
+-- );

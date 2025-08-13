@@ -1,6 +1,6 @@
 import { supabase } from "@/supabase";
 
-export const upsertProfile = async (info: any) => {
+export const upsertProfile = async (info) => {
   const { data, error } = await supabase
     .from("profiles")
     .upsert({ ...info, updated_at: new Date().toISOString() }, { onConflict: "id" })
@@ -18,22 +18,31 @@ export const findProfile = async (id: String) => {
 };
 
 export const getConnections = async () => {
-  const { data, error } = await supabase.from("connections").select(`*, inviter_id(*), invitee_id(*)`);
+  const { data, error } = await supabase
+    .from("connections")
+    .select(`*, inviter:inviter_id(*), invitee:invitee_id(*)`)
+    .not("invitee_id", "is", null);
+
+  if (error) throw error;
+
+  return data;
+};
+
+export const createInvite = async (id: String) => {
+  const { data, error } = await supabase.from("connections").insert({ inviter_id: id }).select().single();
   if (error) throw error;
   return data;
 };
 
-
-export const createInvite = async(id: string) => {
-  const {data, error} = await supabase.from("invites").insert({inviter_id: id}).select().single();
-  console.log(data, error);
-  return data;
-}
-
-export const acceptInvite = async (id: string) => {
-  const {data, error} = await supabase.functions.invoke("redeem-invite", {
-    body:{id},
+export const acceptInvite = async (id: String) => {
+  const { data, error } = await supabase.functions.invoke("redeem-invite", {
+    body: { id },
   });
-  console.log(data, error);
+
+  if (error) {
+    const { error: errorMessage } = await error.context.json();
+    throw errorMessage;
+  }
+
   return data;
-}
+};

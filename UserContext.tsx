@@ -29,12 +29,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const fetchUser = async () => {
-    try {
-      const user = await getUserFromSupabase();
-      setAuth(user);
-    } catch (err) {
-      console.error("Failed to get current user:", err);
-    }
+    const user = await getUserFromSupabase();
+    setAuth(user);
   };
 
   const signIn = async () => {
@@ -48,7 +44,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   useEffect(() => {
-    fetchUser();
+    try {
+      fetchUser();
+    } catch (err) {
+      console.error("Failed to get current user:", err);
+    }
   }, []);
 
   return <UserContext.Provider value={{ user, signIn, signOut, status }}>{children}</UserContext.Provider>;

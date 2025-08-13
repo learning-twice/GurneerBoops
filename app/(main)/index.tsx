@@ -1,101 +1,72 @@
 import Page from "@/components/Page";
 import { useUser } from "@/UserContext";
-import { getConnections } from "@/api";
-import { useEffect, useState } from "react";
-import { createInvite, acceptInvite } from "@/api";
-import {
-  Text,
-  ActivityIndicator,
-  View,
-  FlatList,
-  StyleSheet,
-  Button,
-} from "react-native";
 
-export default function ConnectionsScreen() {
+import { createInvite, acceptInvite, getConnections } from "@/api";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Button, Alert, TextInput, View , Text} from "react-native";
+import ConnectionList from "@/components/ConnectionsList";
+
+export default function () {
   const { user } = useUser();
-  const [connections, setConnections] = useState<any[] | null>(null);
+  const [connections, setConnections] = useState<any>(null);
+  const [code, setCode] = useState("");
 
   useEffect(() => {
-    getConnections().then((data) => {
-      setConnections(data);
-    });
+    try {
+      fetchConnections();
+    } catch (e) {
+      console.error(e);
+    }
   }, []);
 
-  if (!connections) {
+  const fetchConnections = async () => {
+    const connections = await getConnections();
+    setConnections(connections);
+  };
+
+  const handleCreateInvite = async () => {
+    Alert.alert("Invite Sent!");
+    createInvite(user.id);
+  };
+
+  if (!connections)
     return (
       <Page>
-        <View style={styles.centered}>
-          <ActivityIndicator size="large" color="#4B9CD3" />
-        </View>
+        <ActivityIndicator />
       </Page>
     );
-  }
-
-  const peeps = connections.map((connect: any) =>
-    connect.inviter_id.id === user.id ? connect.invitee_id : connect.inviter_id
- 
-  );
-   const handlecreateInvite = async() =>{
-    console.log("invite someone!");
-    createInvite(user.id);
-  }
 
   return (
     <Page>
-      <Text style={styles.greeting}>Hello {user.full_name}!</Text>
-      <Button title="Invite" onPress={handlecreateInvite}/>
-      <Button
-        title="Accept"
-        onPress={() => {
-          acceptInvite("1a659290-7a73-4585-a936-13488a1c2215");
-        }}
-      />
-      <Text style={styles.subtext}>
-        You have {connections.length} connection{connections.length !== 1 ? "s" : ""}.
-      </Text>
-
-      <FlatList
-        data={peeps}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.connectionCard}>
-            <Text style={styles.connectionName}>{item.full_name}</Text>
-          </View>
-        )}
-        contentContainerStyle={styles.listContainer}
-      />
+      <Text>Hello {user.full_name}!!</Text>
+      <Button title="Invite" onPress={handleCreateInvite} />
+      <View style={{ borderWidth: 2, borderColor: "black" }}>
+        <TextInput
+          style={{
+            height: 40,
+            borderColor: "gray",
+            borderWidth: 1,
+            paddingHorizontal: 10,
+            marginBottom: 10,
+          }}
+          placeholder="Enter invite code..."
+          value={code}
+          onChangeText={setCode}
+        />
+        <Button
+          title="Accept"
+          onPress={async () => {
+            try {
+              await acceptInvite(code);
+              fetchConnections();
+            } catch (e: any) {
+              Alert.alert("Error", e, [{ text: "OK", style: "destructive" }]);
+              console.error(e);
+            }
+          }}
+        />
+      </View>
+      <ConnectionList connections={connections} />
     </Page>
   );
 }
-
-const styles = StyleSheet.create({
-  centered: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  greeting: {
-    fontSize: 24,
-    fontWeight: "600",
-    marginBottom: 10,
-  },
-  subtext: {
-    fontSize: 16,
-    color: "#555",
-    marginBottom: 20,
-  },
-  listContainer: {
-    paddingBottom: 20,
-  },
-  connectionCard: {
-    backgroundColor: "#f5f5f5",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  connectionName: {
-    fontSize: 16,
-    color: "#333",
-  },
-});
