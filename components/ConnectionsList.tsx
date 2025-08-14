@@ -1,8 +1,16 @@
+import { useState } from "react";
 import { useUser } from "@/UserContext";
-import { FlatList, Text, StyleSheet, View } from "react-native";
+import { FlatList, Text, StyleSheet, View, RefreshControl } from "react-native";
 
-export default function ConnectionList({ connections }) {
+export default function ConnectionList({ connections, fetchConnections }) {
   const { user } = useUser();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchConnections();
+    setRefreshing(false);
+  };
 
   return (
     <>
@@ -19,6 +27,9 @@ export default function ConnectionList({ connections }) {
             </Text>
           );
         }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["grey"]} progressBackgroundColor={"black"} />
+        }
         ListEmptyComponent={<Text style={{ fontWeight: "bold", paddingHorizontal: 10 }}>No connections yet.</Text>}
         ListHeaderComponent={<View style={{ marginTop: 15 }} />}
       />

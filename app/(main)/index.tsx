@@ -1,6 +1,5 @@
 import Page from "@/components/Page";
 import { useUser } from "@/UserContext";
-
 import { createInvite, acceptInvite, getConnections } from "@/api";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Button, Alert, TextInput, View , Text} from "react-native";
@@ -66,7 +65,7 @@ export default function () {
           }}
         />
       </View>
-      <ConnectionList connections={connections} />
+      <ConnectionList connections={connections} fetchConnections={fetchConnections} />
     </Page>
   );
 }
