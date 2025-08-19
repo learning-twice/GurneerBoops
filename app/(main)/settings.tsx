@@ -6,7 +6,16 @@ export default function Settings() {
   const { signOut } = useUser();
   return (
     <Page>
-      <Button text="Sign out" onPress={signOut} />
+      <Button
+        text="Sign out"
+        onPress={() => {
+          try {
+            signOut();
+          } catch (e) {
+            console.error(e);
+          }
+        }}
+      />
     </Page>
   );
 }

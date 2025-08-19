@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import Page from "@/components/Page";
-import { useLocalSearchParams } from "expo-router";
-import { Text } from "react-native";
 import { findProfile } from "@/api";
+import Page from "@/components/Page";
+import { sendPushNotification } from "@/notifications";
+import { useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { Alert, Button, Text } from "react-native";
 
 export default function Friend() {
   const { id } = useLocalSearchParams();
@@ -17,6 +18,11 @@ export default function Friend() {
     getFriend();
   }, []);
 
+  const handleSend = async () => {
+    sendPushNotification(friend.expo_push_token);
+    Alert.alert("Boop Sent!");
+  };
+
   if (!friend) return null;
 
   return (
@@ -24,6 +30,7 @@ export default function Friend() {
       <Text>Friends!</Text>
       <Text>{id}</Text>
       <Text>{friend.full_name}</Text>
+      <Button title="Send Boop!" onPress={handleSend} />
     </Page>
   );
 }
