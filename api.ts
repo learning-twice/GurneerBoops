@@ -48,7 +48,6 @@ export const acceptInvite = async (id: String) => {
 };
 
 export const addPushToken = async (user: any, token: String) => {
-  const { data, error } = await supabase.from("profiles").update({ expo_push_token: token }).eq("id", user.id);
-  console.log(data, user.id, token, error);
+  const { error } = await supabase.from("profiles").update({ expo_push_token: token }).eq("id", user.id);
   if (error) throw error;
 };

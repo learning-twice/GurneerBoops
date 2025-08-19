@@ -12,12 +12,12 @@ Notifications.setNotificationHandler({
   }),
 });
 
-export async function sendPushNotification(expoPushToken: string) {
+export async function sendPushNotification(expoPushToken: string, title: string, body: string) {
   const message = {
     to: expoPushToken,
     sound: "default",
-    title: "Original Title",
-    body: "And here is the body!",
+    title,
+    body,
     data: { someData: "goes here" },
   };
 
