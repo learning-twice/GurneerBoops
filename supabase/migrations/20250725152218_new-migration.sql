@@ -95,6 +95,8 @@ using (
   )
 );
 
+alter table profiles add column expo_push_token text;
+
 
 -- --- Invites
 -- create table invites (

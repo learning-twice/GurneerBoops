@@ -10,10 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.learningtwice.GurneerBoops",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
-      }
+      },
+      "bundleIdentifier": "com.gurneerorg.GurneerBoops"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,6 +29,7 @@
     },
     "plugins": [
       "expo-router",
+      "expo-notifications",
       [
         "expo-splash-screen",
         {
@@ -44,7 +45,6 @@
           "iosUrlScheme": "com.googleusercontent.apps.895289514692-lpihg3tl9unlc3thtklej03e6ckru1rl"
         }
       ]
-      
     ],
     "experiments": {
       "typedRoutes": true

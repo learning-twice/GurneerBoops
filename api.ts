@@ -11,7 +11,7 @@ export const upsertProfile = async (info) => {
   return data;
 };
 
-export const findProfile = async (id: String) => {
+export const findProfile = async (id: String | String[]) => {
   const { data, error } = await supabase.from("profiles").select().eq("id", id).single();
   if (error) throw error;
   return data;
