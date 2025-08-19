@@ -2,7 +2,7 @@ import Page from "@/components/Page";
 import { useUser } from "@/UserContext";
 import { createInvite, acceptInvite, getConnections } from "@/api";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Button, Alert, TextInput, View , Text} from "react-native";
+import { ActivityIndicator, Button, Alert, TextInput, View , Text, Share} from "react-native";
 import ConnectionList from "@/components/ConnectionsList";
 
 export default function () {
@@ -24,8 +24,15 @@ export default function () {
   };
 
   const handleCreateInvite = async () => {
-    Alert.alert("Invite Sent!");
-    createInvite(user.id);
+   try{
+    const data = await createInvite(user.id);
+    await Share.share({
+      message: `Hi! Use this code to Boop with me: ${data.id}`,
+    });
+   }
+   catch (e){
+    console.error(e);
+   }
   };
 
   if (!connections)
