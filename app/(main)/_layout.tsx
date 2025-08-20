@@ -47,6 +47,13 @@ export default () => {
           href: null,
         }}
       />
+
+      <Tabs.Screen
+        name="join/[inviteid]"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 };

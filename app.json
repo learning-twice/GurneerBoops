@@ -15,6 +15,7 @@
       },
       "bundleIdentifier": "com.gurneerorg.GurneerBoops"
     },
+    "associatedDomains": ["applinks:boopapp.site"],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

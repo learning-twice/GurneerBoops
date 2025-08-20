@@ -1,9 +1,9 @@
+import { acceptInvite, createInvite, getConnections } from "@/api";
+import ConnectionList from "@/components/ConnectionsList";
 import Page from "@/components/Page";
 import { useUser } from "@/UserContext";
-import { createInvite, acceptInvite, getConnections } from "@/api";
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Button, Alert, TextInput, View , Text, Share} from "react-native";
-import ConnectionList from "@/components/ConnectionsList";
+import { ActivityIndicator, Alert, Button, Share, Text, TextInput, View } from "react-native";
 
 export default function () {
   const { user } = useUser();
