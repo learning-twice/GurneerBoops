@@ -8,20 +8,6 @@ import { useEffect } from "react";
 import * as Linking from "expo-linking";
 
 export default () => {
-  useEffect(() => {
-    const checkInitialURL = async () => {
-      const initialUrl = await Linking.getInitialURL();
-      if (initialUrl) {
-        console.log("Opened with URL:", initialUrl);
-        const code = new URL(initialUrl).pathname.split("/").pop();
-        router.push(`/join/${code}`);
-      }
-    };
-
-    checkInitialURL();
-  }, []);
-
-  
 
   return (
     <Tabs>
