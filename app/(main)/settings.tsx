@@ -1,9 +1,9 @@
-import Page from "@/components/Page";
+import { useAuth } from "@/AuthContext";
 import Button from "@/components/Button";
-import { useUser } from "@/UserContext";
+import Page from "@/components/Page";
 
 export default function Settings() {
-  const { signOut } = useUser();
+  const { signOut } = useAuth();
   return (
     <Page>
       <Button

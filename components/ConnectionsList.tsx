@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { useUser } from "@/UserContext";
-import { FlatList, Text, StyleSheet, View, RefreshControl, TouchableOpacity } from "react-native";
+
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useAuth } from "@/AuthContext";
 
 export default function ConnectionList({ connections, fetchConnections }) {
-  const { user } = useUser();
+  const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
 

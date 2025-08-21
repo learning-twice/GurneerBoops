@@ -1,6 +1,6 @@
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { findProfile, upsertProfile } from "@/lib/api";
 import { supabase } from "@/supabase";
-import { findProfile, upsertProfile } from "@/api";
+import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 GoogleSignin.configure({
   iosClientId: "895289514692-lpihg3tl9unlc3thtklej03e6ckru1rl.apps.googleusercontent.com"

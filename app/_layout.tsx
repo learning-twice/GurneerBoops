@@ -1,16 +1,20 @@
-import { UserProvider, useUser } from "@/UserContext";
+
 import { Stack } from "expo-router";
+import { AuthProvider, useAuth } from "@/AuthContext";
+import { AppProvider } from "@/AppContext";
 
 export default function RootLayout() {
   return (
-    <UserProvider>
-      <App />
-    </UserProvider>
+      <AuthProvider>
+      <AppProvider>
+        <App />
+      </AppProvider>
+    </AuthProvider>
   );
 }
 
 const App = () => {
-  const { status } = useUser();
+  const { status } = useAuth();
 
   if (status === "loading") return null;
 

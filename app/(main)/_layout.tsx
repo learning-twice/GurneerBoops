@@ -1,25 +1,22 @@
-import { addPushToken } from "@/api";
-import { registerForPushNotificationsAsync } from "@/notifications";
-import { useUser } from "@/UserContext";
+
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
-import { useEffect } from "react";
+import { ActivityIndicator } from "react-native";
+import { useAppContext } from "@/AppContext";
+import Page from "@/components/Page";
+
 
 export default () => {
-  const { user } = useUser();
+ const { loaded } = useAppContext();
+ if (!loaded) {
+    return (
+      <Page>
+        <ActivityIndicator />
+      </Page>
+    );
+  }
 
-  useEffect(() => {
-    try {
-      regToken();
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
-
-  const regToken = async () => {
-    const token = await registerForPushNotificationsAsync();
-    if (token) await addPushToken(user, token);
-  };
+  
 
   return (
     <Tabs>

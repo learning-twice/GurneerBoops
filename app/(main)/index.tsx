@@ -1,27 +1,16 @@
-import { acceptInvite, createInvite, getConnections } from "@/api";
 import ConnectionList from "@/components/ConnectionsList";
 import Page from "@/components/Page";
-import { useUser } from "@/UserContext";
+import { acceptInvite, createInvite, getConnections } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Button, Share, Text, TextInput, View } from "react-native";
+import { useAppContext } from "@/AppContext";
+
 
 export default function () {
-  const { user } = useUser();
-  const [connections, setConnections] = useState<any>(null);
+
+ const { user, connections } = useAppContext();
   const [code, setCode] = useState("");
 
-  useEffect(() => {
-    try {
-      fetchConnections();
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
-
-  const fetchConnections = async () => {
-    const connections = await getConnections();
-    setConnections(connections);
-  };
 
   const handleCreateInvite = async () => {
    try{
@@ -64,7 +53,7 @@ export default function () {
           onPress={async () => {
             try {
               await acceptInvite(code);
-              fetchConnections();
+              //fetchConnections();
             } catch (e: any) {
               Alert.alert("Error", e, [{ text: "OK", style: "destructive" }]);
               console.error(e);
@@ -72,7 +61,7 @@ export default function () {
           }}
         />
       </View>
-      <ConnectionList connections={connections} fetchConnections={fetchConnections} />
+      <ConnectionList connections={connections} fetchConnections={[]} />
     </Page>
   );
 }

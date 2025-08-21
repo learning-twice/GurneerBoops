@@ -1,20 +1,20 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { signIn as googleSignIn, signOut as googleSignOut, getUserFromSupabase } from "@/auth";
+import { signIn as googleSignIn, signOut as googleSignOut, getUserFromSupabase } from "@/lib/auth";
 
 type User = any;
 
 type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
-type UserContextType = {
+type AuthContextType = {
   user: User | null;
   signIn: () => void;
   signOut: () => void;
   status: AuthStatus;
 };
 
-const UserContext = createContext<UserContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
 
@@ -29,8 +29,12 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const fetchUser = async () => {
-    const user = await getUserFromSupabase();
-    setAuth(user);
+   try {
+      const user = await getUserFromSupabase();
+      setAuth(user);
+    } catch (e) {
+      console.error("Failed to get current user:", e);
+    }
   };
 
   const signIn = async () => {
@@ -49,13 +53,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     } catch (err) {
       console.error("Failed to get current user:", err);
     }
+    fetchUser();
   }, []);
 
-  return <UserContext.Provider value={{ user, signIn, signOut, status }}>{children}</UserContext.Provider>;
+  return <AuthContext.Provider value={{ user, signIn, signOut, status }}>{children}</AuthContext.Provider>;
 };
 
-export const useUser = () => {
-  const ctx = useContext(UserContext);
-  if (!ctx) throw new Error("useUser must be used within UserProvider");
+  export const useAuth = () => {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
+
 };

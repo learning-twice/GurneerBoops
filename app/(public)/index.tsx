@@ -1,13 +1,13 @@
+import { useAuth } from "@/AuthContext";
 import { H1 } from "@/components/Headings";
 import Page from "@/components/Page";
-import { useUser } from "@/UserContext";
 import { GoogleSigninButton } from "@react-native-google-signin/google-signin";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import icon from "./../../assets/images/icon.png";
 
 export default function () {
-  const { signIn } = useUser();
+  const { signIn } = useAuth();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const scaleAnim = useRef(new Animated.Value(0.85)).current;

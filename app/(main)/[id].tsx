@@ -1,6 +1,6 @@
-import { findProfile } from "@/api";
 import KeyboardScreen from "@/components/KeyboardScreen";
-import { sendPushNotification } from "@/notifications";
+import { findProfile } from "@/lib/api";
+import { sendPushNotification } from "@/lib/notifications";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
