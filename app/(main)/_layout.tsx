@@ -1,14 +1,7 @@
-
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
-import { ActivityIndicator } from "react-native";
-import { useAppContext } from "@/AppContext";
-import Page from "@/components/Page";
-import { useEffect } from "react";
-import * as Linking from "expo-linking";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default () => {
-
   return (
     <Tabs>
       <Tabs.Screen
