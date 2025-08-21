@@ -4,17 +4,22 @@ import { Tabs } from "expo-router";
 import { ActivityIndicator } from "react-native";
 import { useAppContext } from "@/AppContext";
 import Page from "@/components/Page";
-
+import { useEffect } from "react";
+import * as Linking from "expo-linking";
 
 export default () => {
- const { loaded } = useAppContext();
- if (!loaded) {
-    return (
-      <Page>
-        <ActivityIndicator />
-      </Page>
-    );
-  }
+  useEffect(() => {
+    const checkInitialURL = async () => {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        console.log("Opened with URL:", initialUrl);
+        const code = new URL(initialUrl).pathname.split("/").pop();
+        router.push(`/join/${code}`);
+      }
+    };
+
+    checkInitialURL();
+  }, []);
 
   
 
@@ -38,7 +43,7 @@ export default () => {
       />
 
       <Tabs.Screen
-        name="[id]"
+        name="[freindId]"
         options={{
           title: "Send Boop!",
           href: null,
@@ -46,7 +51,7 @@ export default () => {
       />
 
       <Tabs.Screen
-        name="join/[inviteid]"
+        name="join"
         options={{
           href: null,
         }}

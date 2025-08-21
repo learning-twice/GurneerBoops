@@ -14,9 +14,9 @@ export default function () {
 
   const handleCreateInvite = async () => {
    try{
-    const data = await createInvite(user.id);
+    const invite = await createInvite(user.id);
     await Share.share({
-      message: `Hi! Use this code to Boop with me: ${data.id}`,
+      message: `Hi! Use this code to Boop with me: http://boopapp.site/join/${invite.id}`,
     });
    }
    catch (e){
