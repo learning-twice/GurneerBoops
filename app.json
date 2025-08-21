@@ -13,9 +13,10 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
-      "bundleIdentifier": "com.gurneerorg.GurneerBoops"
+      "bundleIdentifier": "com.gurneerorg.GurneerBoops",
+       "associatedDomains": ["applinks:boopapp.site"]
     },
-    "associatedDomains": ["applinks:boopapp.site"],
+   
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",

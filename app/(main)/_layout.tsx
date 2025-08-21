@@ -29,7 +29,7 @@ export default () => {
       />
 
       <Tabs.Screen
-        name="[freindId]"
+        name="[friendId]"
         options={{
           title: "Send Boop!",
           href: null,
