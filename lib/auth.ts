@@ -1,4 +1,5 @@
-import { findProfile, upsertProfile } from "@/lib/api";
+import { findProfile, upsertProfile, addPushToken } from "@/lib/api";
+import { registerForPushNotificationsAsync } from "@/lib/notifications";
 import { supabase } from "@/supabase";
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
@@ -35,6 +36,8 @@ export const signIn = async () => {
   const { email, avatar_url, full_name } = authUser.user_metadata;
 
   const user = await upsertProfile({ id: authUser.id, email, full_name, avatar_url });
+  const token = await registerForPushNotificationsAsync();
+  if (token) await addPushToken(user, token);
 
   return user;
 };

@@ -33,7 +33,7 @@ export async function sendPushNotification(expoPushToken: string, title: string,
 }
 
 function handleRegistrationError(errorMessage: string) {
-  //alert(errorMessage);
+  alert(errorMessage);
   throw new Error(errorMessage);
 }
 
@@ -73,6 +73,6 @@ export async function registerForPushNotificationsAsync() {
       handleRegistrationError(`${e}`);
     }
   } else {
-    handleRegistrationError("Must use physical device for push notifications");
+    console.error("Must use physical device for push notifications");
   }
 }
