@@ -8,6 +8,7 @@ type AppContextType = {
   user: User | null;
   loaded: boolean;
   connections: any;
+  refreshConnections: () => Promise<void>;
 };
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -35,7 +36,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     setLoaded(true);
   };
 
-  return <AppContext.Provider value={{ user, loaded, connections }}>{children}</AppContext.Provider>;
+  const refreshConnections = async () => {
+    const connections = await getConnections();
+    setConnections(connections);
+  };
+
+  return <AppContext.Provider value={{ user, loaded, connections, refreshConnections }}>{children}</AppContext.Provider>;
+
 };
 
 export const useAppContext = () => {

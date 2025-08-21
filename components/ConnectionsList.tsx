@@ -1,17 +1,18 @@
-
-import { useRouter } from "expo-router";
 import { useState } from "react";
-import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useAuth } from "@/AuthContext";
+import { FlatList, Text, StyleSheet, View, RefreshControl, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
+import { useAppContext } from "@/AppContext";
 
-export default function ConnectionList({ connections, fetchConnections }) {
+export default function ConnectionList() {
+  const { connections, refreshConnections } = useAppContext();
   const { user } = useAuth();
   const [refreshing, setRefreshing] = useState(false);
   const router = useRouter();
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await fetchConnections();
+    await refreshConnections();
     setRefreshing(false);
   };
 
