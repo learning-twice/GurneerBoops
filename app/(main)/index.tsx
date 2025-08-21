@@ -7,9 +7,7 @@ import { useAppContext } from "@/AppContext";
 
 
 export default function () {
-
- const { user, connections } = useAppContext();
-  const [code, setCode] = useState("");
+ const { user } = useAppContext();
 
 
   const handleCreateInvite = async () => {
@@ -24,44 +22,12 @@ export default function () {
    }
   };
 
-  if (!connections)
-    return (
-      <Page>
-        <ActivityIndicator />
-      </Page>
-    );
 
   return (
     <Page>
       <Text>Hello {user.full_name}!!</Text>
       <Button title="Invite" onPress={handleCreateInvite} />
-      <View style={{ borderWidth: 2, borderColor: "black" }}>
-        <TextInput
-          style={{
-            height: 40,
-            borderColor: "gray",
-            borderWidth: 1,
-            paddingHorizontal: 10,
-            marginBottom: 10,
-          }}
-          placeholder="Enter invite code..."
-          value={code}
-          onChangeText={setCode}
-        />
-        <Button
-          title="Accept"
-          onPress={async () => {
-            try {
-              await acceptInvite(code);
-              //fetchConnections();
-            } catch (e: any) {
-              Alert.alert("Error", e, [{ text: "OK", style: "destructive" }]);
-              console.error(e);
-            }
-          }}
-        />
-      </View>
-      <ConnectionList connections={connections} fetchConnections={[]} />
+      <ConnectionList />
     </Page>
   );
 }

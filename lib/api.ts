@@ -34,7 +34,7 @@ export const createInvite = async (id: string) => {
   return data;
 };
 
-export const acceptInvite = async (id: string) => {
+export const acceptInvite = async (id: string | string[]) => {
   const { data, error } = await supabase.functions.invoke("redeem-invite", {
     body: { id },
   });
