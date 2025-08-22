@@ -14,9 +14,10 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "bundleIdentifier": "com.gurneerorg.GurneerBoops",
-       "associatedDomains": ["applinks:boopapp.site"]
+      "associatedDomains": [
+        "applinks:boopapp.site"
+      ]
     },
-   
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -57,6 +58,17 @@
         "projectId": "71678c13-854c-428b-8b78-d21e574cbdaf"
       }
     },
-    "owner": "gurneerorg"
+    "owner": "gurneerorg",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/71678c13-854c-428b-8b78-d21e574cbdaf",
+       "requestHeaders": {
+    "expo-channel-name": "production"
+  },
+  "checkAutomatically": "ON_LOAD",
+  "fallbackToCacheTimeout": 0
+    }
   }
 }

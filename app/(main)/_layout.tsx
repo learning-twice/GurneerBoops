@@ -5,7 +5,7 @@ export default () => {
   return (
     <Tabs>
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: "Home",
           headerShown: false,
@@ -21,7 +21,7 @@ export default () => {
         }}
       />
 
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="[friendId]"
         options={{
           title: "Send Boop!",
@@ -34,7 +34,7 @@ export default () => {
         options={{
           href: null,
         }}
-      />
+      /> */}
     </Tabs>
   );
 };
