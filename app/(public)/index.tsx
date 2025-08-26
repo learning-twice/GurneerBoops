@@ -40,7 +40,7 @@ export default function SignInScreen() {
     setIsPressed(true);
     setTimeout(() => {
       setIsPressed(false);
-      signIn();
+      signIn(); 
     }, 150);
   };
 
@@ -79,7 +79,7 @@ export default function SignInScreen() {
               isPressed && styles.signInContainerPressed,
             ]}
           >
-            <GoogleSignInBlock onSignIn={signIn} disabled={isLoggingIn} />
+            <GoogleSignInBlock onSignIn={() => {}} disabled={isLoggingIn} />
           </Pressable>
         </Animated.View>
 
