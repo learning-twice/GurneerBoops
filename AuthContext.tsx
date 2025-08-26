@@ -4,12 +4,14 @@ import { signIn as googleSignIn, signOut as googleSignOut, getUserFromSupabase }
 type User = any;
 
 type AuthStatus = "loading" | "unauthenticated" | "authenticated";
+type Phase = "idle" | "logging-in" | "logged-in";
 
 type AuthContextType = {
   user: User | null;
-  signIn: () => void;
-  signOut: () => void;
+  signIn: () => Promise<void>;
+  signOut: () => Promise<void>;
   status: AuthStatus;
+  phase: Phase;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -17,6 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
+  const [phase, setPhase] = useState<Phase>("idle");
 
   const setAuth = (user: User) => {
     if (user) {
@@ -29,7 +32,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const fetchUser = async () => {
-   try {
+    try {
       const user = await getUserFromSupabase();
       setAuth(user);
     } catch (e) {
@@ -38,30 +41,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signIn = async () => {
-    const user = await googleSignIn();
-    if (user) setAuth(user);
+    try {
+      setPhase("logging-in");
+      const user = await googleSignIn();
+      setPhase("logged-in");
+      if (user) setAuth(user);
+    } catch (e) {
+      setPhase("idle");
+      throw e;
+    }
   };
 
   const signOut = async () => {
     await googleSignOut();
     setAuth(null);
+    setPhase("idle");
   };
 
   useEffect(() => {
-    try {
-      fetchUser();
-    } catch (err) {
-      console.error("Failed to get current user:", err);
-    }
     fetchUser();
   }, []);
 
-  return <AuthContext.Provider value={{ user, signIn, signOut, status }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ user, signIn, signOut, status, phase }}>{children}</AuthContext.Provider>;
 };
 
-  export const useAuth = () => {
+export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
   return ctx;
-
 };

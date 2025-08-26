@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { useAuth } from "./AuthContext";
-import { findProfile, getConnections } from "./lib/api";
+import { useAuth } from "@/AuthContext";
+import { getConnections } from "@/lib/api";
 
 type User = any;
 
@@ -29,20 +29,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
     load();
   }, [status]);
 
-  const load = async () => {
-    const [profileData, connections] = await Promise.all([findProfile(authUser.id), getConnections()]);
-    setUser(profileData);
-    setConnections(connections);
-    setLoaded(true);
-  };
-
   const refreshConnections = async () => {
     const connections = await getConnections();
     setConnections(connections);
   };
 
-  return <AppContext.Provider value={{ user, loaded, connections, refreshConnections }}>{children}</AppContext.Provider>;
+  const load = async () => {
+    refreshConnections();
+    setUser(authUser);
+    setLoaded(true);
+  };
 
+  return <AppContext.Provider value={{ user, loaded, connections, refreshConnections }}>{children}</AppContext.Provider>;
 };
 
 export const useAppContext = () => {

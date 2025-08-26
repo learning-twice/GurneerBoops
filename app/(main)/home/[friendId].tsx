@@ -1,126 +1,77 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  Text,
-  Alert,
-  TextInput,
-  StyleSheet,
-  View,
-  ScrollView,
-  Animated,
-  Pressable,
-} from "react-native";
-import { useRouter, useLocalSearchParams } from "expo-router";
-
-import { findProfile } from "@/lib/api";
+import { useState } from "react";
+import { Text, Alert, TextInput, StyleSheet, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 import { sendPushNotification } from "@/lib/notifications";
 import KeyboardScreen from "@/components/KeyboardScreen";
+import { useAppContext } from "@/AppContext";
 
 export default function Friend() {
   const { friendId } = useLocalSearchParams();
-  const [friend, setFriend] = useState<any>(null);
   const [title, setTitle] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { connections } = useAppContext();
 
+  const friend = connections
+    .map((c) => (c.inviter?.id === friendId ? c.inviter : c.invitee?.id === friendId ? c.invitee : null))
+    .find(Boolean);
 
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(30)).current;
-  const scaleAnim = useRef(new Animated.Value(0.95)).current;
-
-  useEffect(() => {
-    async function getFriend() {
-      const friend = await findProfile(friendId);
-      setFriend(friend);
-    }
-    getFriend();
-
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 700,
-        useNativeDriver: true,
-      }),
-      Animated.spring(slideAnim, {
-        toValue: 0,
-        tension: 60,
-        friction: 8,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        tension: 80,
-        friction: 8,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  }, []);
+  if (!friend) return null;
 
   const handleSend = async () => {
     if (!title || !message) {
-      Alert.alert("Please enter a title and message");
+      Alert.alert("Missing Info", "Please enter both a title and message.");
       return;
     }
-    await sendPushNotification(friend.expo_push_token, title, message);
-    Alert.alert("Boop Sent!");
-    setTitle("");
-    setMessage("");
+    try {
+      setLoading(true);
+      await sendPushNotification(friend.expo_push_token, title, message);
+      Alert.alert("Success", "Your boop has been sent!");
+      setTitle("");
+      setMessage("");
+    } catch {
+      Alert.alert("Error", "Could not send notification. Try again.");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  if (!friend) return null;
 
   return (
     <KeyboardScreen>
       <View style={styles.container}>
-    
-        <View style={styles.backgroundCircle1} />
-        <View style={styles.backgroundCircle2} />
+        <Text style={styles.heading}>Send a Boop</Text>
+        <Text style={styles.subheading}>
+          To <Text style={styles.friendName}>{friend.full_name}</Text>
+        </Text>
 
-       
-        <Animated.View
-          style={[
-            styles.card,
-            {
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
-            },
-          ]}
-        >
-          <ScrollView
-            contentContainerStyle={styles.cardContent}
-            showsVerticalScrollIndicator={false}
-          >
-        
-            <Text style={styles.header}>Send a Boop to</Text>
-            <Text style={styles.friendName}>{friend.full_name}!</Text>
+        <View style={styles.card}>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Title</Text>
+            <TextInput
+              style={styles.input}
+              value={title}
+              onChangeText={setTitle}
+              placeholder="Enter a short title"
+              placeholderTextColor="#9ca3af"
+            />
+          </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Title</Text>
-              <TextInput
-                style={styles.input}
-                value={title}
-                onChangeText={setTitle}
-                placeholder="Enter title..."
-                placeholderTextColor="rgba(31,41,55,0.4)"
-              />
-            </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Message</Text>
+            <TextInput
+              style={[styles.input, styles.messageInput]}
+              value={message}
+              onChangeText={setMessage}
+              placeholder="Write your message…"
+              placeholderTextColor="#9ca3af"
+              multiline
+            />
+          </View>
 
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputLabel}>Message</Text>
-              <TextInput
-                style={[styles.input, styles.messageInput]}
-                value={message}
-                onChangeText={setMessage}
-                placeholder="Enter your message..."
-                placeholderTextColor="rgba(31,41,55,0.4)"
-                multiline
-              />
-            </View>
-
-            <Pressable style={styles.sendButton} onPress={handleSend}>
-              <Text style={styles.sendButtonText}>Send Boop!</Text>
-            </Pressable>
-          </ScrollView>
-        </Animated.View>
-        <View style={styles.bottomAccent} />
+          <TouchableOpacity style={[styles.button, loading && styles.buttonDisabled]} onPress={handleSend} disabled={loading}>
+            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Send Boop</Text>}
+          </TouchableOpacity>
+        </View>
       </View>
     </KeyboardScreen>
   );
@@ -129,126 +80,68 @@ export default function Friend() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f0fdfa",
-    paddingHorizontal: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
+    padding: 20,
   },
-  backgroundCircle1: {
-    position: "absolute",
-    top: "5%",
-    right: "-12%",
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    backgroundColor: "rgba(75, 197, 196, 0.08)",
+  heading: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#111827",
+    marginBottom: 4,
   },
-  backgroundCircle2: {
-    position: "absolute",
-    bottom: "10%",
-    left: "-10%",
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: "rgba(64, 224, 208, 0.07)",
-  },
-  card: {
-    width: "100%",
-    maxWidth: 420,
-    borderRadius: 28,
-    backgroundColor: "#fff",
-    shadowColor: "#40e0d0",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 24,
-    elevation: 8,
+  subheading: {
+    fontSize: 15,
+    color: "#6b7280",
     marginBottom: 20,
-    overflow: "hidden",
-  },
-  cardContent: {
-    padding: 28,
-    alignItems: "center",
-  },
-  header: {
-    fontSize: 26,
-    fontWeight: "800",
-    color: "#1f2937",
-    textAlign: "center",
-    marginBottom: 12,
   },
   friendName: {
-    fontSize: 24,
-    fontWeight: "900",
-    color: "#4bc5c4",
-    textAlign: "center",
-    marginBottom: 28,
+    fontWeight: "600",
+    color: "#111827",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
   },
   inputContainer: {
-    marginBottom: 18,
-    width: "100%",
+    marginBottom: 16,
   },
   inputLabel: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "500",
     marginBottom: 6,
-    color: "#4bc5c4",
+    color: "#374151",
   },
   input: {
     borderWidth: 1,
-    borderColor: "rgba(64,224,208,0.3)",
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    borderColor: "#d1d5db",
+    borderRadius: 8,
+    padding: 12,
     fontSize: 16,
     backgroundColor: "#fff",
-    shadowColor: "#4bc5c4",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
+    color: "#111827",
   },
   messageInput: {
-    minHeight: 120,
+    minHeight: 90,
     textAlignVertical: "top",
   },
-  sendButton: {
-    marginTop: 24,
-    backgroundColor: "#4bc5c4",
-    paddingVertical: 16,
-    borderRadius: 18,
-    shadowColor: "#4bc5c4",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 5,
+  button: {
+    marginTop: 8,
+    backgroundColor: "#4f46e5",
+    paddingVertical: 14,
+    borderRadius: 8,
     alignItems: "center",
-    width: "100%",
   },
-  sendButtonText: {
+  buttonDisabled: {
+    opacity: 0.7,
+  },
+  buttonText: {
     color: "#fff",
-    fontSize: 18,
-    fontWeight: "800",
+    fontSize: 16,
+    fontWeight: "600",
   },
-  bottomAccent: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 6,
-    backgroundColor: "#4bc5c4",
-  },
-  backButton: {
-  alignSelf: "flex-start",
-  marginBottom: 16,
-  paddingVertical: 6,
-  paddingHorizontal: 12,
-  borderRadius: 12,
-  backgroundColor: "rgba(75,197,196,0.1)",
-},
-backButtonText: {
-  color: "#4bc5c4",
-  fontSize: 14,
-  fontWeight: "700",
-},
 });

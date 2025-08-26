@@ -20,21 +20,6 @@ export default () => {
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="settings" color={color} />,
         }}
       />
-
-      {/* <Tabs.Screen
-        name="[friendId]"
-        options={{
-          title: "Send Boop!",
-          href: null,
-        }}
-      />
-
-      <Tabs.Screen
-        name="join"
-        options={{
-          href: null,
-        }}
-      /> */}
     </Tabs>
   );
 };
