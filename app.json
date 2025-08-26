@@ -14,9 +14,7 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "bundleIdentifier": "com.gurneerorg.GurneerBoops",
-      "associatedDomains": [
-        "applinks:boopapp.site"
-      ]
+      "associatedDomains": ["applinks:www.boopapp.site", "applinks:boopapp.site"]
     },
     "android": {
       "adaptiveIcon": {
