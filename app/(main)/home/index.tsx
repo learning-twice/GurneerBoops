@@ -37,8 +37,9 @@ export default function ConnectionsScreen() {
     try {
       const invite = await createInvite(user.id);
       await Share.share({
-        message: `Hi! Use this code to Boop with me: http://boopapp.site/join/${invite.id}`,
+        message: `Hi! Use this code to Boop with me: https://boopapp.site/join/${invite.id}`,
       });
+      console.log("Invite ID:", invite.id);
     } catch (e) {
       console.error(e);
     }
