@@ -58,7 +58,7 @@ export default function ConnectionsScreen() {
         <View style={styles.card}>
           {}
           <View style={styles.header}>
-            <Text style={styles.greeting}>👋 Hellooooo</Text>
+            <Text style={styles.greeting}>👋 Heya</Text>
             <Text style={styles.username}>{user.full_name}!</Text>
 
             <TouchableOpacity

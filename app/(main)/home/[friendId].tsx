@@ -13,7 +13,7 @@ export default function Friend() {
   const { connections } = useAppContext();
 
   const friend = connections
-    .map((c) => (c.inviter?.id === friendId ? c.inviter : c.invitee?.id === friendId ? c.invitee : null))
+    .map((c: { inviter: { id: string | string[]; }; invitee: { id: string | string[]; }; }) => (c.inviter?.id === friendId ? c.inviter : c.invitee?.id === friendId ? c.invitee : null))
     .find(Boolean);
 
   if (!friend) return null;
