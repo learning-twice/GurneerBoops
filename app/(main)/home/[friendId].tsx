@@ -46,7 +46,7 @@ export default function Friend() {
     }
     try {
       setLoading(true);
-      await sendPushNotification(friend.expo_push_token, title, message, sound);
+      await sendPushNotification({expoPushToken:friend.expo_push_token, title, body:message, sound});
       Alert.alert("Success", "Your boop has been sent!");
       setTitle("");
       setMessage("");
