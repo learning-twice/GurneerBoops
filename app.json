@@ -34,15 +34,15 @@
       "expo-notifications",
       {
         "sounds": [
-          "./assets/be_quiet.wav",
-          "./assets/bye-bye.wav",
-          "./assets/daddy.wav",
-          "./assets/good_morning.wav",
-          "./assets/haha.wav",
-          "./assets/googleit.wav",
-          "./assets/HiyaGeorgie.wav",
-          "./assets/offer_x.wav",
-          "./assets/questions.wav"
+          "./assets/sounds/be_quiet.wav",
+          "./assets/sounds/bye-bye.wav",
+          "./assets/sounds/daddy.wav",
+          "./assets/sounds/good_morning.wav",
+          "./assets/sounds/haha.wav",
+          "./assets/sounds/googleit.wav",
+          "./assets/sounds/HiyaGeorgie.wav",
+          "./assets/sounds/offer_x.wav",
+          "./assets/sounds/questions.wav"
 
         ]
       }
