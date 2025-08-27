@@ -30,7 +30,23 @@
     },
     "plugins": [
       "expo-router",
+      [
       "expo-notifications",
+      {
+        "sounds": [
+          "./assets/be_quiet.wav",
+          "./assets/bye-bye.wav",
+          "./assets/daddy.wav",
+          "./assets/good_morning.wav",
+          "./assets/haha.wav",
+          "./assets/googleit.wav",
+          "./assets/HiyaGeorgie.wav",
+          "./assets/offer_x.wav",
+          "./assets/questions.wav"
+
+        ]
+      }
+    ],
       [
         "expo-splash-screen",
         {

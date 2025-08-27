@@ -1,9 +1,19 @@
-import { useState } from "react";
-import { Text, Alert, TextInput, StyleSheet, View, TouchableOpacity, ActivityIndicator } from "react-native";
-import { useLocalSearchParams } from "expo-router";
-import { sendPushNotification } from "@/lib/notifications";
-import KeyboardScreen from "@/components/KeyboardScreen";
 import { useAppContext } from "@/AppContext";
+import KeyboardScreen from "@/components/KeyboardScreen";
+import { sendPushNotification } from "@/lib/notifications";
+import { useLocalSearchParams } from "expo-router";
+import { useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Picker } from "@react-native-picker/picker";
+
 
 export default function Friend() {
   const { friendId } = useLocalSearchParams();
@@ -11,9 +21,20 @@ export default function Friend() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const { connections } = useAppContext();
+  const [sound, setSound] = useState("default");
 
   const friend = connections
-    .map((c: { inviter: { id: string | string[]; }; invitee: { id: string | string[]; }; }) => (c.inviter?.id === friendId ? c.inviter : c.invitee?.id === friendId ? c.invitee : null))
+    .map(
+      (c: {
+        inviter: { id: string | string[] };
+        invitee: { id: string | string[] };
+      }) =>
+        c.inviter?.id === friendId
+          ? c.inviter
+          : c.invitee?.id === friendId
+          ? c.invitee
+          : null
+    )
     .find(Boolean);
 
   if (!friend) return null;
@@ -25,7 +46,7 @@ export default function Friend() {
     }
     try {
       setLoading(true);
-      await sendPushNotification(friend.expo_push_token, title, message);
+      await sendPushNotification(friend.expo_push_token, title, message, sound);
       Alert.alert("Success", "Your boop has been sent!");
       setTitle("");
       setMessage("");
@@ -67,9 +88,36 @@ export default function Friend() {
               multiline
             />
           </View>
-
-          <TouchableOpacity style={[styles.button, loading && styles.buttonDisabled]} onPress={handleSend} disabled={loading}>
-            {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Send Boop</Text>}
+          <Text style={styles.label}>Sound</Text>
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={sound}
+              onValueChange={(itemValue) => setSound(itemValue)}
+               itemStyle={{ height: 100, fontSize: 16 }}
+            >
+            <Picker.Item label="Default" value="default" />
+            <Picker.Item label="Nelson" value="haha.wav" />
+            <Picker.Item label="Godfather" value="offer_x.wav" />
+            <Picker.Item label="Daddy" value="daddy.wav" />
+            <Picker.Item label="Good Morning" value="good_morning.wav" />
+            <Picker.Item label="Questions" value="questions.wav" />
+              <Picker.Item label="Be Quiet" value="be_quiet.wav" />
+                <Picker.Item label="Bye-bye" value="bye-bye.wav" />
+                  <Picker.Item label="Hiya" value="HiyaGeorgie.wav" />
+                    <Picker.Item label="Google It" value="googleit.wav" />
+             
+            </Picker>
+          </View>
+          <TouchableOpacity
+            style={[styles.button, loading && styles.buttonDisabled]}
+            onPress={handleSend}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Send Boop</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -81,7 +129,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f0fdfa", 
+    backgroundColor: "#f0fdfa",
     justifyContent: "center",
   },
   heading: {
@@ -99,11 +147,11 @@ const styles = StyleSheet.create({
   },
   friendName: {
     fontWeight: "700",
-    color: "#4bc5c4", 
+    color: "#4bc5c4",
   },
   card: {
     backgroundColor: "#ffffff",
-    borderRadius: 24, 
+    borderRadius: 24,
     padding: 24,
     shadowColor: "#40e0d0",
     shadowOpacity: 0.12,
@@ -123,7 +171,7 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: "#d1d5db",
-    borderRadius: 14, 
+    borderRadius: 14,
     padding: 14,
     fontSize: 16,
     backgroundColor: "#f9fafb",
@@ -135,7 +183,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 12,
-    backgroundColor: "#4bc5c4", 
+    backgroundColor: "#4bc5c4",
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: "center",
