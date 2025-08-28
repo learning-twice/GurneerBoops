@@ -1,12 +1,7 @@
 import { supabase } from "@/supabase";
 
 export const upsertProfile = async (info) => {
-  const { data, error } = await supabase
-    .from("profiles")
-    .upsert({ ...info, updated_at: new Date().toISOString() }, { onConflict: "id" })
-    .select()
-    .single();
-    const { data, error } = await supabase.from("profiles").upsert(info, { onConflict: "id" }).select().single();
+  const { data, error } = await supabase.from("profiles").upsert(info, { onConflict: "id" }).select().single();
 
   if (error) throw error;
   return data;
