@@ -5,6 +5,7 @@ import { useAuth } from "@/AuthContext";
 import StatusPill from "@/components/SigninStatusPill";
 import GoogleSignInBlock from "@/components/SigninBlock";
 import icon from "./../../assets/images/icon.png";
+import * as AppleAuthentication from "expo-apple-authentication";
 
 export default function SignInScreen() {
   const { signIn, phase } = useAuth();
@@ -44,6 +45,31 @@ export default function SignInScreen() {
     }, 150);
   };
 
+  function AppleAuthButton() {
+  const { signInApple, phase } = useAuth();
+  return (
+    <AppleAuthentication.AppleAuthenticationButton
+      buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+      buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+      cornerRadius={5}
+      style={aStyles.button}
+      onPress={signInApple}
+    />
+  );
+}
+
+const aStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  button: {
+    width: 200,
+    height: 44,
+  },
+});
+
   return (
     <Page style={styles.page}>
       <StatusPill phase={phase} />
@@ -81,6 +107,7 @@ export default function SignInScreen() {
           >
             <GoogleSignInBlock onSignIn={() => {}} disabled={isLoggingIn} />
           </Pressable>
+          <AppleAuthButton />
         </Animated.View>
 
         <View style={styles.bottomAccent} />

@@ -14,7 +14,8 @@
         "ITSAppUsesNonExemptEncryption": false
       },
       "bundleIdentifier": "com.gurneerorg.GurneerBoops",
-      "associatedDomains": ["applinks:www.boopapp.site", "applinks:boopapp.site"]
+      "associatedDomains": ["applinks:www.boopapp.site", "applinks:boopapp.site"],
+      "usesAppleSignIn": true
     },
     "android": {
       "adaptiveIcon": {
@@ -61,7 +62,8 @@
         {
           "iosUrlScheme": "com.googleusercontent.apps.895289514692-lpihg3tl9unlc3thtklej03e6ckru1rl"
         }
-      ]
+      ],
+        "expo-apple-authentication"
     ],
     "experiments": {
       "typedRoutes": true

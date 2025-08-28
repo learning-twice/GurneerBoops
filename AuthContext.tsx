@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { signIn as googleSignIn, signOut as googleSignOut, getUserFromSupabase } from "@/lib/auth";
+import { signIn as googleSignIn, appleSignIn, signOut as googleSignOut, getUserFromSupabase } from "@/lib/auth";
 
 type User = any;
 
@@ -9,6 +9,7 @@ type Phase = "idle" | "logging-in" | "logged-in";
 type AuthContextType = {
   user: User | null;
   signIn: () => Promise<void>;
+  signInApple: () => Promise<void>;
   signOut: () => Promise<void>;
   status: AuthStatus;
   phase: Phase;
@@ -52,6 +53,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const signInApple = async () => {
+    try {
+      setPhase("logging-in");
+      const user = await appleSignIn();
+      setPhase("logged-in");
+      if (user) setAuth(user);
+    } catch (e) {
+      setPhase("idle");
+      throw e;
+    }
+  };
+
   const signOut = async () => {
     await googleSignOut();
     setAuth(null);
@@ -62,8 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, []);
 
-  return <AuthContext.Provider value={{ user, signIn, signOut, status, phase }}>{children}</AuthContext.Provider>;
-};
+return <AuthContext.Provider value={{ user, signIn, signInApple, signOut, status, phase }}>{children}</AuthContext.Provider>;};
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
