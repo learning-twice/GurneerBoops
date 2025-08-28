@@ -13,7 +13,20 @@ import {
   View,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import { useAudioPlayer } from "expo-audio"
+import { Button } from "react-native";
 
+const sounds: any = {
+  "haha.wav": require("@/assets/sounds/haha.wav"),
+  "offer_x.wav": require("@/assets/sounds/offer_x.wav"),
+  "daddy.wav": require("@/assets/sounds/daddy.wav"),
+  "good_morning.wav": require("@/assets/sounds/good_morning.wav"),
+  "questions.wav": require("@/assets/sounds/questions.wav"),
+  "be_quiet.wav": require("@/assets/sounds/be_quiet.wav"),
+  "googleit.wav": require("@/assets/sounds/googleit.wav"),
+  "HiyaGeorgie.wav": require("@/assets/sounds/HiyaGeorgie.wav"),
+  "bye-bye.wav": require("@/assets/sounds/bye-bye.wav"),
+};
 
 export default function Friend() {
   const { friendId } = useLocalSearchParams();
@@ -22,6 +35,15 @@ export default function Friend() {
   const [loading, setLoading] = useState(false);
   const { connections } = useAppContext();
   const [sound, setSound] = useState("default");
+  const player = useAudioPlayer(sounds[sound]);
+
+  const playSound = async () => {
+    console.log(sound);
+    if (sound !== "default") {
+      player.seekTo(0);
+      player.play();
+    }
+  };
 
   const friend = connections
     .map(
@@ -118,6 +140,7 @@ export default function Friend() {
             ) : (
               <Text style={styles.buttonText}>Send Boop</Text>
             )}
+             <Button title="Play Sound" onPress={playSound} />
           </TouchableOpacity>
         </View>
       </View>

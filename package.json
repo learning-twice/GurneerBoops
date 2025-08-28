@@ -20,6 +20,8 @@
     "@react-navigation/native": "^7.1.6",
     "@supabase/supabase-js": "^2.52.0",
     "expo": "53.0.20",
+    "expo-apple-authentication": "~7.2.4",
+    "expo-audio": "^0.4.8",
     "expo-blur": "~14.1.5",
     "expo-constants": "~17.1.7",
     "expo-dev-client": "~5.2.4",
@@ -46,8 +48,7 @@
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
-    "expo-apple-authentication": "~7.2.4"
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
