@@ -140,8 +140,11 @@ export default function Friend() {
             ) : (
               <Text style={styles.buttonText}>Send Boop</Text>
             )}
-             <Button title="Play Sound" onPress={playSound} />
+        
           </TouchableOpacity>
+           <TouchableOpacity style={styles.button} onPress={playSound}>
+  <Text style={styles.buttonText}>▶️ Play Sound</Text>
+</TouchableOpacity>
         </View>
       </View>
     </KeyboardScreen>
