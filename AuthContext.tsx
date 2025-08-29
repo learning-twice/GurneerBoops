@@ -1,15 +1,15 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { signIn as googleSignIn, appleSignIn, signOut as googleSignOut, getUserFromSupabase } from "@/lib/auth";
+import { googleSignIn, appleSignIn, signOut as authSignOut, getUserFromSupabase } from "@/lib/auth";
 
 type User = any;
 
 type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 type Phase = "idle" | "logging-in" | "logged-in";
+export type SignInProvider = "apple" | "google";
 
 type AuthContextType = {
   user: User | null;
-  signIn: () => Promise<void>;
-  signInApple: () => Promise<void>;
+  signIn: (provider?: SignInProvider) => Promise<void>;
   signOut: () => Promise<void>;
   status: AuthStatus;
   phase: Phase;
@@ -41,22 +41,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  const signIn = async () => {
+  const signIn = async (provider: SignInProvider = "google") => {
     try {
       setPhase("logging-in");
-      const user = await googleSignIn();
-      setPhase("logged-in");
-      if (user) setAuth(user);
-    } catch (e) {
-      setPhase("idle");
-      throw e;
-    }
-  };
-
-  const signInApple = async () => {
-    try {
-      setPhase("logging-in");
-      const user = await appleSignIn();
+      const user = provider === "google" ? await googleSignIn() : await appleSignIn();
       setPhase("logged-in");
       if (user) setAuth(user);
     } catch (e) {
@@ -66,7 +54,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signOut = async () => {
-    await googleSignOut();
+    await authSignOut();
     setAuth(null);
     setPhase("idle");
   };
@@ -75,7 +63,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     fetchUser();
   }, []);
 
-return <AuthContext.Provider value={{ user, signIn, signInApple, signOut, status, phase }}>{children}</AuthContext.Provider>;};
+  return <AuthContext.Provider value={{ user, signIn, signOut, status, phase }}>{children}</AuthContext.Provider>;
+};
 
 export const useAuth = () => {
   const ctx = useContext(AuthContext);

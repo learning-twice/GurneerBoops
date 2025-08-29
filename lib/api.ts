@@ -8,7 +8,7 @@ export const upsertProfile = async (info) => {
 };
 
 export const findProfile = async (id: string | string[]) => {
-  const { data, error } = await supabase.from("profiles").select().eq("id", id).single();
+  const { data, error } = await supabase.from("profiles").select().eq("id", id).maybeSingle();
   if (error) throw error;
   return data;
 };
@@ -44,7 +44,6 @@ export const acceptInvite = async (id: string | string[]) => {
 };
 
 export const addPushToken = async (user: any, token: string) => {
-  console.log(user.expo_push_token);
   const { error } = await supabase.from("profiles").update({ expo_push_token: token }).eq("id", user.id);
   if (error) throw error;
 };

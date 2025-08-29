@@ -142,8 +142,8 @@ export default function Friend() {
             )}
         
           </TouchableOpacity>
-           <TouchableOpacity style={styles.button} onPress={playSound}>
-  <Text style={styles.buttonText}>▶️ Play Sound</Text>
+           <TouchableOpacity style={styles.playButton} onPress={playSound}>
+  <Text style={styles.playButtonText}>Play Sound</Text>
 </TouchableOpacity>
         </View>
       </View>
@@ -227,4 +227,21 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
   },
+  playButton: {
+  marginTop: 12,
+  backgroundColor: "#34d399", 
+  paddingVertical: 16,
+  borderRadius: 14,
+  alignItems: "center",
+  shadowColor: "#34d399",
+  shadowOffset: { width: 0, height: 5 },
+  shadowOpacity: 0.2,
+  shadowRadius: 12,
+  elevation: 5,
+},
+playButtonText: {
+  color: "#ffffff",
+  fontSize: 17,
+  fontWeight: "700",
+},
 });

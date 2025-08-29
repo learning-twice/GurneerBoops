@@ -17,7 +17,7 @@ export async function getUserFromSupabase() {
   return findProfile(authUser.id);
 }
 
-export const signIn = async () => {
+export const googleSignIn = async () => {
   await GoogleSignin.hasPlayServices();
 
   const googleAuthData = await GoogleSignin.signIn();
@@ -34,13 +34,18 @@ export const signIn = async () => {
   const authUser = data.user;
   if (!authUser) throw new Error("No auth user!");
 
-  const { email, avatar_url, full_name } = authUser.user_metadata;
+  const email = authUser.email;
+  const { avatar_url, full_name } = authUser.user_metadata;
 
-  const user = await upsertProfile({ id: authUser.id, email, full_name, avatar_url });
+  const user = await findProfile(authUser.id);
+  if (user) return user;
+
+  const newUser = await upsertProfile({ id: authUser.id, email, full_name, avatar_url });
+
   const token = await registerForPushNotificationsAsync();
-  if (token) await addPushToken(user, token);
+  if (token) await addPushToken(newUser, token);
 
-  return user;
+  return newUser;
 };
 
 export const appleSignIn = async () => {
@@ -59,15 +64,18 @@ export const appleSignIn = async () => {
   const authUser = data.user;
   if (!authUser) throw new Error("No auth user!");
 
-  const email = credential.email;
+  const email = authUser.email;
   const full_name = `${credential.fullName?.givenName ?? ""} ${credential.fullName?.familyName ?? ""}`.trim();
 
-  // needs to be only once!
-  const user = await upsertProfile({ id: authUser.id, email, full_name });
-  const token = await registerForPushNotificationsAsync();
-  if (token) await addPushToken(user, token);
+const user = await findProfile(authUser.id);
+  if (user) return user;
 
-  return user;
+  const newUser = await upsertProfile({ id: authUser.id, email, full_name });
+
+  const token = await registerForPushNotificationsAsync();
+  if (token) await addPushToken(newUser, token);
+
+  return newUser;
 };
 
 export const signOut = async () => {
