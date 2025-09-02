@@ -7,10 +7,36 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
+import { deleteUser } from "@/lib/api";
 
 export default function SettingsScreen() {
   const { user, signOut } = useAuth();
+
+  const handleDeleteAccount = async () => {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure? This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteUser();
+              await signOut();
+            } catch (e) {
+              console.error("Error deleting account:", e);
+              Alert.alert("Error", "Could not delete account.");
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -38,11 +64,9 @@ export default function SettingsScreen() {
           { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
         ]}
       >
-       
         <View style={styles.backgroundCircle1} />
         <View style={styles.backgroundCircle2} />
 
-       
         <View style={styles.card}>
           <View style={styles.header}>
             <Text style={styles.greeting}>See you soon,</Text>
@@ -50,15 +74,22 @@ export default function SettingsScreen() {
           </View>
 
           <TouchableOpacity
-            style={styles.logoutButton}
+            style={[styles.actionButton, styles.logoutButton]}
             activeOpacity={0.9}
             onPress={signOut}
           >
-            <Text style={styles.logoutText}>Log Out</Text>
+            <Text style={styles.actionText}>Log Out</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.actionButton, styles.deleteButton]}
+            activeOpacity={0.9}
+            onPress={handleDeleteAccount}
+          >
+            <Text style={styles.actionText}>Delete Account</Text>
           </TouchableOpacity>
         </View>
 
-        
         <View style={styles.bottomAccent} />
       </Animated.View>
     </Page>
@@ -125,18 +156,27 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     color: "#4bc5c4",
   },
-  logoutButton: {
-    backgroundColor: "#4bc5c4",
+  actionButton: {
+    width: "100%",
     paddingVertical: 14,
     paddingHorizontal: 28,
     borderRadius: 14,
-    shadowColor: "#4bc5c4",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
+    alignItems: "center",
+    marginTop: 14,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
     elevation: 5,
   },
-  logoutText: {
+  logoutButton: {
+    backgroundColor: "#4bc5c4",
+    shadowColor: "#4bc5c4",
+  },
+  deleteButton: {
+    backgroundColor: "#ef4444", 
+    shadowColor: "#ef4444",
+  },
+  actionText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "700",

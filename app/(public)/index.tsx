@@ -95,7 +95,7 @@ const aStyles = StyleSheet.create({
               <Text style={styles.titleAccent}>Boop</Text>
             </Text>
           </View>
-
+<View style={styles.authButtons}>
           <Pressable
             onPressIn={() => setIsPressed(true)}
             onPressOut={() => setIsPressed(false)}
@@ -108,6 +108,7 @@ const aStyles = StyleSheet.create({
             <GoogleSignInBlock onSignIn={() => {}} disabled={isLoggingIn} />
           </Pressable>
           <AppleAuthButton />
+          </View>
         </Animated.View>
 
         <View style={styles.bottomAccent} />
@@ -159,6 +160,11 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "rgba(75, 197, 196, 0.02)",
   },
+  authButtons: {
+  width: "100%",
+  gap: 14, 
+  alignItems: "center",
+},
   card: {
     backgroundColor: "#ffffff",
     paddingVertical: 44,

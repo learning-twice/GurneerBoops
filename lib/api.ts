@@ -47,3 +47,14 @@ export const addPushToken = async (user: any, token: string) => {
   const { error } = await supabase.from("profiles").update({ expo_push_token: token }).eq("id", user.id);
   if (error) throw error;
 };
+
+export const deleteUser = async () => {
+  const { data, error } = await supabase.functions.invoke("delete-user");
+
+  if (error) {
+    const { error: errorMessage } = await error.context.json();
+    throw errorMessage;
+  }
+
+  return data;
+};
