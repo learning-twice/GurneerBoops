@@ -1,20 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Animated, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import Page from "@/components/Page";
-import { useAuth } from "@/AuthContext";
-import StatusPill from "@/components/SigninStatusPill";
-import GoogleSignInBlock from "@/components/SigninBlock";
+import SignInBlock from "@/components/SigninBlock";
 import icon from "./../../assets/images/icon.png";
-import * as AppleAuthentication from "expo-apple-authentication";
 
 export default function SignInScreen() {
-  const { signIn, phase } = useAuth();
-  const isLoggingIn = phase === "logging-in";
-
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(50)).current;
   const scaleAnim = useRef(new Animated.Value(0.85)).current;
-  const [isPressed, setIsPressed] = useState(false);
 
   useEffect(() => {
     Animated.parallel([
@@ -37,53 +30,20 @@ export default function SignInScreen() {
     ]).start();
   }, []);
 
-  const handleSignInPress = () => {
-    setIsPressed(true);
-    setTimeout(() => {
-      setIsPressed(false);
-      signIn(); 
-    }, 150);
-  };
-
-  function AppleAuthButton() {
-  const { signInApple, phase } = useAuth();
-  return (
-    <AppleAuthentication.AppleAuthenticationButton
-      buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-      buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-      cornerRadius={5}
-      style={aStyles.button}
-      onPress={signInApple}
-    />
-  );
-}
-
-const aStyles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  button: {
-    width: 200,
-    height: 44,
-  },
-});
-
   return (
     <Page style={styles.page}>
-      <StatusPill phase={phase} />
-
       <Animated.View
         style={[
           styles.container,
           { opacity: fadeAnim, transform: [{ translateY: slideAnim }] },
         ]}
       >
+        {/* Background shapes */}
         <View style={styles.backgroundCircle1} />
         <View style={styles.backgroundCircle2} />
         <View style={styles.backgroundGradient} />
 
+        {/* Card with logo and buttons */}
         <Animated.View style={[styles.card, { transform: [{ scale: scaleAnim }] }]}>
           <View style={styles.logoContainer}>
             <View style={styles.logoGlow} />
@@ -95,20 +55,9 @@ const aStyles = StyleSheet.create({
               <Text style={styles.titleAccent}>Boop</Text>
             </Text>
           </View>
-<View style={styles.authButtons}>
-          <Pressable
-            onPressIn={() => setIsPressed(true)}
-            onPressOut={() => setIsPressed(false)}
-            onPress={handleSignInPress}
-            style={[
-              styles.signInContainer,
-              isPressed && styles.signInContainerPressed,
-            ]}
-          >
-            <GoogleSignInBlock onSignIn={() => {}} disabled={isLoggingIn} />
-          </Pressable>
-          <AppleAuthButton />
-          </View>
+
+          {/* SignInBlock handles Google + Apple buttons */}
+          <SignInBlock />
         </Animated.View>
 
         <View style={styles.bottomAccent} />
@@ -160,11 +109,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: "rgba(75, 197, 196, 0.02)",
   },
-  authButtons: {
-  width: "100%",
-  gap: 14, 
-  alignItems: "center",
-},
   card: {
     backgroundColor: "#ffffff",
     paddingVertical: 44,
@@ -217,21 +161,6 @@ const styles = StyleSheet.create({
   },
   titleAccent: {
     color: "#4bc5c4",
-  },
-  signInContainer: {
-    width: "100%",
-    borderRadius: 14,
-    overflow: "hidden",
-    shadowColor: "#4bc5c4",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 5,
-    transform: [{ scale: 1 }],
-  },
-  signInContainerPressed: {
-    transform: [{ scale: 0.97 }],
-    shadowOpacity: 0.04,
   },
   bottomAccent: {
     position: "absolute",
